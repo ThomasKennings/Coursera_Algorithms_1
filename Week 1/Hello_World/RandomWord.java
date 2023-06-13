@@ -14,6 +14,8 @@ public class RandomWord {
         String output = "";
         double cycle = 0;
 
+        System.out.println("Enter your words: ");
+
         while (!StdIn.isEmpty()) {
             cycle += 1;
 

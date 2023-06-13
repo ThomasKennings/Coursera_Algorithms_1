@@ -4,11 +4,14 @@
  *  Last modified:     1/1/2019
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdOut;
+
 public class Percolation {
     private int[][] grid;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
+        System.out.println("Constructor called.");
         grid = new int[n][n];
         return;
     }
@@ -49,12 +52,11 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
-        /*
+        System.out.println("Main called");
         StdOut.println("1");
         Percolation P1 = new Percolation(5);
         StdOut.println("2");
         int[][] g1 = P1.getGrid();
-        */
         return;
     }
 }
