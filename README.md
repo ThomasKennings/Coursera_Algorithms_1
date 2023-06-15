@@ -8,7 +8,5 @@ The ".\;algs4.jar" tells java to look in the current directory (.) and the libra
 
 To-Do:
 Percolation:
-- Implement error checking (ex: don't allow access out of bounds)
-- Connect site to adjacent sites when opening
-- Implement isFull() (basically done)
-- Implement percolates()
+- use visualizer scripts
+- start making monte-carlo simulation class

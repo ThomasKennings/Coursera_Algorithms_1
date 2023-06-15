@@ -1,3 +1,8 @@
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+
+import java.awt.Font;
+
 /******************************************************************************
  *  Compilation:  javac PercolationVisualizer.java
  *  Execution:    java PercolationVisualizer input.txt
@@ -15,11 +20,6 @@
  *  with with site (1, 1) in the upper left-hand corner.
  *
  ******************************************************************************/
-
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdDraw;
-
-import java.awt.Font;
 
 public class PercolationVisualizer {
 
