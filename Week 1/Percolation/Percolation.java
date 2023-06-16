@@ -19,6 +19,7 @@ public class Percolation {
             throw new IllegalArgumentException(
                     "Constructor: matrixWidth must be non-zero and positive.");
         }
+
         this.matrixWidth = matrixWidth;
         imaginaryTopSite = (matrixWidth * matrixWidth);
         imaginaryBottomSite = (matrixWidth * matrixWidth) + 1;
@@ -36,8 +37,9 @@ public class Percolation {
         for (int i = 0; i < matrixWidth; i++) {
             union(imaginaryTopSite, i);
         }
-        for (int i = (matrixWidth * matrixWidth) - 1; i > matrixWidth * (matrixWidth - 1) - 1;
-             i--) {
+
+        int bottomRightSite = matrixWidth * matrixWidth - 1;
+        for (int i = bottomRightSite; i > bottomRightSite - matrixWidth; i--) {
             union(imaginaryBottomSite, i);
         }
     }
@@ -48,6 +50,7 @@ public class Percolation {
         if (invalidRowCol(row, col)) {
             throw new IllegalArgumentException("open(): Invalid row or column.");
         }
+
         int site = coords2Site(row, col);
         siteOpenness[site] = 1;
         numOpenSites += 1;
@@ -80,6 +83,7 @@ public class Percolation {
         if (invalidRowCol(row, col)) {
             throw new IllegalArgumentException("isOpen(): Invalid row or column.");
         }
+
         return siteOpenness[coords2Site(row, col)] == 1;
     }
 
@@ -88,7 +92,9 @@ public class Percolation {
         if (invalidRowCol(row, col)) {
             throw new IllegalArgumentException("isFull(): Invalid row or column.");
         }
+
         int site = coords2Site(row, col);
+
         return connected(site, imaginaryTopSite);
     }
 
@@ -128,6 +134,7 @@ public class Percolation {
         while (parentID[site] != site) {
             site = parentID[site];
         }
+
         return site;
     }
 
@@ -164,6 +171,7 @@ public class Percolation {
         int[] arr = new int[2];
         arr[0] = site / matrixWidth;    // row
         arr[1] = site % matrixWidth;    // col
+
         return arr;
     }
 
