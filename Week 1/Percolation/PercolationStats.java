@@ -5,25 +5,31 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
-    private int matrixWidth;
+    private static final double CONFIDENCE_95 = 1.96;
+    // private static final int PERCENT_CONVERSION = 100;
     private int numTrials;
     private double[] openFrac;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
-        matrixWidth = n;
+        if (n < 1 || trials < 1) {
+            throw new IllegalArgumentException(
+                    "PercolationStats: Matrix dimensions and number of trials must be positive, non-zero numbers.");
+        }
+
         numTrials = trials;
         openFrac = new double[numTrials];
 
         int randomRow;
         int randomCol;
         for (int i = 0; i < numTrials; i++) {
-            Percolation perc = new Percolation(matrixWidth);
+            Percolation perc = new Percolation(n);
             while (!perc.percolates()) {
-                randomRow = StdRandom.uniformInt(matrixWidth);
-                randomCol = StdRandom.uniformInt(matrixWidth);
+                randomRow = 1 + StdRandom.uniformInt(n);
+                randomCol = 1 + StdRandom.uniformInt(n);
 
                 if (perc.isOpen(randomRow, randomCol)) {
                     // Only want to open a site if it's closed currently
@@ -33,33 +39,29 @@ public class PercolationStats {
                 perc.open(randomRow, randomCol);
             }
 
-            openFrac[i] = 100.0 * perc.numberOfOpenSites() / (matrixWidth * matrixWidth);
-            System.out.println("Percolated with openness fraction of " + openFrac[i] + "%.");
+            openFrac[i] = (double) perc.numberOfOpenSites() / (n * n);
+            // System.out.println("Percolated with openness fraction of " + openFrac[i] + "%.");
         }
     }
 
     // sample mean of percolation threshold
     public double mean() {
-        // Use StdStats to compute this
-        return 0;
+        return StdStats.mean(openFrac);
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        // use StdStats to compute this
-        return 0;
+        return StdStats.stddev(openFrac);
     }
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-
-        return 0;
+        return (mean() - (CONFIDENCE_95 * stddev() / Math.sqrt(numTrials)));
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-
-        return 0;
+        return (mean() + (CONFIDENCE_95 * stddev() / Math.sqrt(numTrials)));
     }
 
     private void print() {
@@ -71,13 +73,14 @@ public class PercolationStats {
 
     // test client (see below)
     public static void main(String[] args) {
+        // Stopwatch stopwatch = new Stopwatch();
+
         int matrixWidth = Integer.parseInt(args[0]);
         int numTrials = Integer.parseInt(args[1]);
-        System.out.println("n: " + matrixWidth + '\t' + "T: " + numTrials);
 
         PercolationStats percStats = new PercolationStats(matrixWidth, numTrials);
 
         percStats.print();
+        // System.out.println("Elapsed time: " + stopwatch.elapsedTime() + " seconds.");
     }
-
 }
