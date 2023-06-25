@@ -4,18 +4,25 @@
  *  Description:
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdRandom;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
+    // there is a much simpler, elegant implementation where you don't end up with nulls in your array.
+    // Rather, when you dequeue a random element from the array, you then take the element on the
+    // tail of the array and insert it into that index.
     private int numberFullCells;
     private int arrayLength;
+    private Item[] queue;
 
     // construct an empty randomized queue
     public RandomizedQueue() {
         numberFullCells = 0;
-        arrayLength = 0;    // what should initial array length be?
-        // instantiate array of length ??? type Item, all cells null
+        arrayLength = 10;
+        queue = (Item[]) new Object[arrayLength];
     }
 
     // is the randomized queue empty?
@@ -37,7 +44,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         // if arrayLength >= numberFullCells
         //      double array size (private method)
 
-        // add item to first available empty space
+        queue[numberFullCells] = item;
+        ++numberFullCells;
     }
 
     // remove and return a random item
@@ -46,17 +54,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException("dequeue(): Queue is already empty.");
         }
 
-        // i = getRandomFullIndex() // <-- private method
-        // set data at i to null
-        // return data that was at i
+        int i;
+        Item item;
 
-        // if arrayLength > 4*numberFullCells
-        //      cut array length in half (private method)
+        i = getRandomFullIndex();
 
-        // there is a much simpler, elegant implementation where you don't end up with nulls in your array.
-        // Rather, when you dequeue a random element from the array, you then take the element on the
-        // tail of the array and insert it into that index.
-        return null;
+        // issue: is assignment operator copying value? if not, value of "item" will change
+        item = queue[i];
+        queue[i] = queue[numberFullCells - 1];
+        queue[numberFullCells - 1] = null;
+        --numberFullCells;
+
+        if (arrayLength > 4 * numberFullCells) {
+            shortenArray();
+        }
+
+        return item;
     }
 
     // return a random item (but do not remove it)
@@ -65,12 +78,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException("sample(): Queue is empty.");
         }
 
-        // return value at random non-empty cell in array
-        // getRandomFullIndex() // <-- private method
-        return null;
+        return queue[getRandomFullIndex()];
     }
-
-    // private function that 'slides' all elements over such that there are no empty spaces between them.
 
     // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
@@ -96,9 +105,32 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         };
     }
 
+    private void shortenArray() {
+        // cut array length in half
+    }
+
+    private int getRandomFullIndex() {
+        return StdRandom.uniformInt(numberFullCells);
+    }
+
     // unit testing (required)
     public static void main(String[] args) {
+        RandomizedQueue<Integer> Q = new RandomizedQueue<Integer>();
+        System.out.println("Array Length: " + Q.arrayLength);
+        System.out.println("Number Full Cells: " + Q.numberFullCells);
+        System.out.println(Arrays.toString(Q.queue));
 
+        Q.enqueue(1);
+        Q.enqueue(2);
+        Q.enqueue(3);
+        Q.enqueue(4);
+
+        System.out.println("Array Length: " + Q.arrayLength);
+        System.out.println("Number Full Cells: " + Q.numberFullCells);
+        System.out.println(Arrays.toString(Q.queue));
+
+        System.out.println("Sampled object: " + Q.sample());
+        
     }
 
 }
