@@ -139,34 +139,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     // unit testing (required)
     public static void main(String[] args) {
-        Deque<Integer> myDeque = new Deque<Integer>();
-        System.out.println("Deque is empty?: " + myDeque.isEmpty());
-        System.out.println("Deque size: " + myDeque.size());
-        myDeque.addFirst(6);
-        System.out.println("Deque size: " + myDeque.size());
-        System.out.println("Deque is empty?: " + myDeque.isEmpty());
-        myDeque.addFirst(5);
-        System.out.println("Deque size: " + myDeque.size());
-        myDeque.addLast(7);
-        System.out.println("Deque size: " + myDeque.size());
-
-        for (Integer i : myDeque) {
-            System.out.println(i);
-        }
-
-        System.out.println("First element: " + myDeque.removeFirst());
-        System.out.println("Deque size: " + myDeque.size());
-
-        for (Integer i : myDeque) {
-            System.out.println(i);
-        }
-
-        System.out.println("Last element: " + myDeque.removeLast());
-        System.out.println("Deque size: " + myDeque.size());
-
-        for (Integer i : myDeque) {
-            System.out.println(i);
-        }
+        // Write unit testing here
     }
 
 }

@@ -6,14 +6,10 @@
 
 import edu.princeton.cs.algs4.StdRandom;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
-    // there is a much simpler, elegant implementation where you don't end up with nulls in your array.
-    // Rather, when you dequeue a random element from the array, you then take the element on the
-    // tail of the array and insert it into that index.
     private int numberFullCells;
     private int arrayLength;
     private Item[] queue;
@@ -21,8 +17,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // construct an empty randomized queue
     public RandomizedQueue() {
         numberFullCells = 0;
-        arrayLength = 10;
+        arrayLength = 1;
         queue = (Item[]) new Object[arrayLength];
+    }
+
+    // Copy constructor
+    private RandomizedQueue(RandomizedQueue<Item> queueToCopy) {
+        this.numberFullCells = queueToCopy.numberFullCells;
+        this.arrayLength = queueToCopy.arrayLength;
+        this.queue = queueToCopy.queue;
     }
 
     // is the randomized queue empty?
@@ -41,8 +44,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new IllegalArgumentException("enqueue(): Cannot add null item.");
         }
 
-        // if arrayLength >= numberFullCells
-        //      double array size (private method)
+        if (arrayLength <= numberFullCells) {
+            lengthenArray();
+        }
 
         queue[numberFullCells] = item;
         ++numberFullCells;
@@ -59,13 +63,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         i = getRandomFullIndex();
 
-        // issue: is assignment operator copying value? if not, value of "item" will change
         item = queue[i];
         queue[i] = queue[numberFullCells - 1];
         queue[numberFullCells - 1] = null;
         --numberFullCells;
 
-        if (arrayLength > 4 * numberFullCells) {
+        if ((arrayLength > 4 * numberFullCells) && (numberFullCells != 0)) {
             shortenArray();
         }
 
@@ -84,18 +87,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
         return new Iterator<Item>() {
+            // Iterators interfering with each other
+            private RandomizedQueue<Item> iterQueue = new RandomizedQueue<Item>(
+                    RandomizedQueue.this);
 
             @Override
             public boolean hasNext() {
-                return !isEmpty();
+                return !(iterQueue.isEmpty());
             }
 
             @Override
             public Item next() {
-                // should this dequeue the items? Or should it just sample?
-                // if sample, will need to keep track of which cells have been visited on a per-iterator basis.
-                // simply "return dequeue()" if this should dequeue.
-                return null;
+                if (iterQueue.isEmpty()) {
+                    throw new NoSuchElementException("Iterator.next(): No elements remaining.");
+                }
+                return iterQueue.dequeue();
             }
 
             @Override
@@ -105,8 +111,23 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         };
     }
 
+    private void lengthenArray() {
+        int oldArrayLength = arrayLength;
+        arrayLength *= 2;
+        Item[] newQueue = (Item[]) new Object[arrayLength];
+        for (int i = 0; i < oldArrayLength; ++i) {
+            newQueue[i] = queue[i];
+        }
+        queue = newQueue;
+    }
+
     private void shortenArray() {
-        // cut array length in half
+        arrayLength /= 2;
+        Item[] newQueue = (Item[]) new Object[arrayLength];
+        for (int i = 0; i < arrayLength; ++i) {
+            newQueue[i] = queue[i];
+        }
+        queue = newQueue;
     }
 
     private int getRandomFullIndex() {
@@ -115,22 +136,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // unit testing (required)
     public static void main(String[] args) {
-        RandomizedQueue<Integer> Q = new RandomizedQueue<Integer>();
-        System.out.println("Array Length: " + Q.arrayLength);
-        System.out.println("Number Full Cells: " + Q.numberFullCells);
-        System.out.println(Arrays.toString(Q.queue));
-
-        Q.enqueue(1);
-        Q.enqueue(2);
-        Q.enqueue(3);
-        Q.enqueue(4);
-
-        System.out.println("Array Length: " + Q.arrayLength);
-        System.out.println("Number Full Cells: " + Q.numberFullCells);
-        System.out.println(Arrays.toString(Q.queue));
-
-        System.out.println("Sampled object: " + Q.sample());
-        
+        // Write unit testing here
     }
 
 }
